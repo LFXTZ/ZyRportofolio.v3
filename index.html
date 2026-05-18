@@ -142,7 +142,6 @@
             min-height: 100vh; display: flex; align-items: center; justify-content: center;
             padding: 2rem; margin-top: 60px; position: relative; overflow: hidden;
         }
-        /* Video Background Style */
         .hero-video-bg {
             position: absolute;
             top: 0;
@@ -151,19 +150,42 @@
             height: 100%;
             object-fit: cover;
             z-index: 0;
-            opacity: 0.5; /* Atur transparansi agar teks tetap terbaca */
+            opacity: 0.5;
             pointer-events: none;
         }
         .hero-content {
             max-width: 1400px; width: 100%; display: grid; grid-template-columns: 1fr 1fr;
             gap: 4rem; align-items: center; position: relative; z-index: 1;
         }
+        
+        /* HEADINGS STYLING (Mendukung Efek Kliping Gradasi Kata AnimeJS) */
         .hero-title { 
-            font-size: clamp(48px, 8vw, 80px); font-weight: 800; line-height: 1.2; margin-bottom: 0.8rem; 
-            background: linear-gradient(135deg, #fff 0%, var(--accent-primary) 100%); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            font-size: clamp(40px, 6vw, 72px); font-weight: 800; line-height: 1.3; margin-bottom: 0.8rem; 
         }
-        .highlight { color: var(--accent-light); text-shadow: 0 0 30px rgba(217, 70, 239, 0.5); }
+        .section-title { 
+            font-size: clamp(36px, 5vw, 56px); font-weight: 800; margin-bottom: 2rem; text-align: center; 
+            position: relative;
+        }
+        .section-title::after { 
+            content: ''; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); 
+            width: 100px; height: 3px; background: linear-gradient(90deg, var(--accent-primary), var(--accent-light)); 
+        }
+
+        /* Pastikan elemen span kata hasil pecahan Anime.js mempertahankan efek warna gradasi */
+        .hero-title span, .section-title span {
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-primary) 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            display: inline-block;
+        }
+        /* Berikan warna highlight khusus untuk span nama */
+        .hero-title span.highlight {
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(217, 70, 239, 0.3);
+        }
+
         .hero-subtitle { font-size: clamp(18px, 3vw, 24px); color: var(--accent-primary); margin-bottom: 1.5rem; }
         .hero-description { font-size: 15px; line-height: 1.75; margin-bottom: 2.5rem; color: var(--text-secondary); max-width: 500px; }
         .hero-buttons { display: flex; gap: 1.5rem; flex-wrap: wrap; }
@@ -179,7 +201,7 @@
 
         /* 3D CANVAS */
         .hero-3d { position: relative; height: 500px; display: flex; align-items: center; justify-content: center; }
-        #canvas3d { width: 100%; height: 100%; display:block; outline: none; }
+        #canvas3d { width: 100%; height: 100%; display:block; outline: none; z-index: 2; }
         .glow-ring { 
             position: absolute; inset: 0; border: 2px solid rgba(168, 85, 247, 0.3); 
             border-radius: 50%; animation: pulse-ring 2s ease-in-out infinite; pointer-events: none; 
@@ -194,15 +216,6 @@
         /* SECTIONS */
         .section { padding: 6rem 2rem; position: relative; }
         .section-container { max-width: 1400px; margin: 0 auto; }
-        .section-title { 
-            font-size: clamp(36px, 5vw, 56px); font-weight: 800; margin-bottom: 2rem; text-align: center; 
-            background: linear-gradient(135deg, #fff 0%, var(--accent-primary) 100%); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative;
-        }
-        .section-title::after { 
-            content: ''; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); 
-            width: 100px; height: 3px; background: linear-gradient(90deg, var(--accent-primary), var(--accent-light)); 
-        }
 
         /* PROFILE SECTION */
         .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 4rem; }
@@ -262,39 +275,38 @@
         .footer { background: rgba(10, 10, 20, 0.8); border-top: 1px solid var(--border-color); padding: 2rem; text-align: center; margin-top: 4rem; }
         .footer p { color: var(--text-secondary); font-size: 14px; }
         .logo-container {
-    display: flex;
-    align-items: center;
-    width: 220px; /* Diperlebar agar tulisan terbaca jelas */
-    text-decoration: none;
-}
+            display: flex;
+            align-items: center;
+            width: 220px;
+            text-decoration: none;
+        }
 
-.svg-portfolio {
-    width: 100%;
-    height: auto;
-    color: var(--accent-primary); /* Menggunakan warna ungu Anda */
-}
+        .svg-portfolio {
+            width: 100%;
+            height: auto;
+            color: var(--accent-primary); 
+        }
 
-.svg-portfolio .line {
-    stroke-dasharray: 500;
-    stroke-dashoffset: 500;
-    animation: drawLetter 2s ease-out forwards;
-}
+        .svg-portfolio .line {
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            animation: drawLetter 2s ease-out forwards;
+        }
 
-/* Animasi jeda per huruf */
-.char-1 { animation-delay: 0.1s; }
-.char-2 { animation-delay: 0.3s; }
-.char-3 { animation-delay: 0.5s; }
-.char-4 { animation-delay: 0.7s; }
-.char-5 { animation-delay: 0.9s; }
-.char-6 { animation-delay: 1.1s; }
-.char-7 { animation-delay: 1.3s; }
-.char-8 { animation-delay: 1.5s; }
-.char-9 { animation-delay: 1.7s; }
-.char-10 { animation-delay: 1.9s; }
+        .char-1 { animation-delay: 0.1s; }
+        .char-2 { animation-delay: 0.3s; }
+        .char-3 { animation-delay: 0.5s; }
+        .char-4 { animation-delay: 0.7s; }
+        .char-5 { animation-delay: 0.9s; }
+        .char-6 { animation-delay: 1.1s; }
+        .char-7 { animation-delay: 1.3s; }
+        .char-8 { animation-delay: 1.5s; }
+        .char-9 { animation-delay: 1.7s; }
+        .char-10 { animation-delay: 1.9s; }
 
-@keyframes drawLetter {
-    to { stroke-dashoffset: 0; }
-}
+        @keyframes drawLetter {
+            to { stroke-dashoffset: 0; }
+        }
     </style>
 </head>
 <body>
@@ -307,23 +319,23 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-  <a href="#home" class="logo-container">
-    <svg viewBox="0 0 1000 200" class="svg-portfolio">
-      <g stroke="currentColor" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-        <path class="line char-1" d="M50 150 V50 H100 A25 25 0 0 1 100 100 H50" />
-        <circle class="line char-2" cx="160" cy="100" r="40" />
-        <path class="line char-3" d="M230 150 V50 H280 A25 25 0 0 1 280 100 H230 M280 100 L310 150" />
-        <path class="line char-4" d="M350 50 H430 M390 50 V150" />
-        <circle class="line char-5" cx="490" cy="100" r="40" />
-        <path class="line char-6" d="M570 150 V50 H640 M570 100 H620" />
-        <circle class="line char-7" cx="710" cy="100" r="40" />
-        <path class="line char-8" d="M790 50 V150 H850" />
-        <path class="line char-9" d="M900 50 V150" />
-        <circle class="line char-10" cx="970" cy="100" r="40" />
-      </g>
-    </svg>
-  </a>
-</div>
+                <a href="#home" class="logo-container">
+                    <svg viewBox="0 0 1000 200" class="svg-portfolio">
+                    <g stroke="currentColor" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+                        <path class="line char-1" d="M50 150 V50 H100 A25 25 0 0 1 100 100 H50" />
+                        <circle class="line char-2" cx="160" cy="100" r="40" />
+                        <path class="line char-3" d="M230 150 V50 H280 A25 25 0 0 1 280 100 H230 M280 100 L310 150" />
+                        <path class="line char-4" d="M350 50 H430 M390 50 V150" />
+                        <circle class="line char-5" cx="490" cy="100" r="40" />
+                        <path class="line char-6" d="M570 150 V50 H640 M570 100 H620" />
+                        <circle class="line char-7" cx="710" cy="100" r="40" />
+                        <path class="line char-8" d="M790 50 V150 H850" />
+                        <path class="line char-9" d="M900 50 V150" />
+                        <circle class="line char-10" cx="970" cy="100" r="40" />
+                    </g>
+                    </svg>
+                </a>
+            </div>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#home" class="nav-link">Beranda</a></li>
                 <li><a href="#profile" class="nav-link">Profil</a></li>
@@ -345,7 +357,7 @@
 
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1 class="hero-title">Hi, I'm <span class="highlight">Rifqy</span></h1>
+                    <h1 class="hero-title"><span>Hi, I'm</span> <span class="highlight">Rifqy</span></h1>
                     <p class="hero-subtitle">Creative Developer & Designer</p>
                     <p class="hero-description">Mahasiswa Sistem Informasi dengan passion dalam teknologi, UI/UX design, dan konten visual estetis. Menghadirkan inovasi dalam web development dengan sentuhan 3D modern yang elegan.</p>
                     <div class="hero-buttons">
@@ -534,7 +546,10 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
+    
+    <script type="module">
+        import { animate, splitText, stagger } from 'https://esm.sh/animejs@4.2.2';
+
         // 1. LOADING SCREEN
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -571,7 +586,32 @@
         }, { threshold: 0.5 });
         skillBars.forEach(bar => observer.observe(bar));
 
-        // 5. THREE.JS 3D OBJECT SETUP
+        // ========================================================
+        // 5. ANIME.JS V4 KINETIC TYPOGRAPHY ANIMATION ON HEADINGS
+        // ========================================================
+        // Menunggu seluruh Font sistem dimuat sempurna agar penghitungan dimensi teks presisi
+        document.fonts.ready.then(() => {
+            // Memisahkan teks judul pada Beranda (.hero-title) dan section lain (.section-title)
+            const { words } = splitText('.hero-title, .section-title', {
+                words: { wrap: 'clip' },
+            });
+
+            // Eksekusi Animasi Sesuai Logika Kode yang Anda Inginkan
+            animate(words, {
+                y: [
+                    { to: ['100%', '0%'] },
+                    { to: '-100%', delay: 1400, ease: 'in(3)' } // Dinaikkan sedikit ke 1400ms agar pengunjung sempat membaca judul sebelum bergulir keluar
+                ],
+                duration: 750,
+                ease: 'out(3)',
+                delay: stagger(100),
+                loop: true,
+            });
+        });
+
+        // ========================================================
+        // 6. THREE.JS VOYAGER MINECRAFT + REALISTIC NEON CLOCK
+        // ========================================================
         const canvas = document.getElementById('canvas3d');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
@@ -580,27 +620,161 @@
         renderer.setSize(canvas.clientWidth, canvas.clientHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
 
-        // Membuat bentuk 3D Keren (Torus Knot)
-        const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0xa855f7, // Sesuai warna accent-primary Anda
-            wireframe: true 
+        // Pencahayaan Optimal
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+        
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 20, 15);
+        scene.add(dirLight);
+
+        // Main Character Group
+        const voyager = new THREE.Group();
+        scene.add(voyager);
+
+        // Palette Warna Minecraft Otentik
+        const skinMat  = new THREE.MeshStandardMaterial({ color: 0xda9174, roughness: 0.8 }); 
+        const noseMat  = new THREE.MeshStandardMaterial({ color: 0xc47e62, roughness: 0.8 });
+        const robeMat  = new THREE.MeshStandardMaterial({ color: 0x4a2a4a, roughness: 0.85 }); 
+        const pantsMat = new THREE.MeshStandardMaterial({ color: 0x2e112e, roughness: 0.9 });
+        const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+        const blackMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.5 });
+
+        // A. KEPALA GROUP (Rotasi independen mengikuti kursor)
+        const headGroup = new THREE.Group();
+        headGroup.position.y = 4.5;
+        voyager.add(headGroup);
+
+        const headGeo = new THREE.BoxGeometry(6, 6, 6);
+        const head = new THREE.Mesh(headGeo, skinMat);
+        headGroup.add(head);
+
+        // Hidung Menonjol Otentik Villager
+        const noseGeo = new THREE.BoxGeometry(1.5, 3, 1.8);
+        const nose = new THREE.Mesh(noseGeo, noseMat);
+        nose.position.set(0, -1, 3.5);
+        headGroup.add(nose);
+
+        // Mata Kiri
+        const eyeL = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.1), whiteMat);
+        eyeL.position.set(-1.5, 0.5, 3.02);
+        const pupilL = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.5, 0.15), blackMat);
+        pupilL.position.set(-1.2, 0.5, 3.04);
+        headGroup.add(eyeL, pupilL);
+
+        // Mata Kanan
+        const eyeR = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.1), whiteMat);
+        eyeR.position.set(1.5, 0.5, 3.02);
+        const pupilR = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.5, 0.15), blackMat);
+        pupilR.position.set(1.2, 0.5, 3.04);
+        headGroup.add(eyeR, pupilR);
+
+        // B. BADAN (Jubah Ungu)
+        const bodyGeo = new THREE.BoxGeometry(6, 9, 4);
+        const body = new THREE.Mesh(bodyGeo, robeMat);
+        body.position.y = -3;
+        voyager.add(body);
+
+        // C. TANGAN (Bersedekap pas di depan dada)
+        const armsGeo = new THREE.BoxGeometry(7.5, 3, 3);
+        const arms = new THREE.Mesh(armsGeo, robeMat);
+        arms.position.set(0, -2, 2.3);
+        voyager.add(arms);
+
+        // E. KAKI (Dua kaki terpisah secara realistis)
+        const legGeo = new THREE.BoxGeometry(2.4, 6, 3.5);
+        
+        const legLeft = new THREE.Mesh(legGeo, pantsMat);
+        legLeft.position.set(-1.4, -10.5, 0); 
+        
+        const legRight = new THREE.Mesh(legGeo, pantsMat);
+        legRight.position.set(1.4, -10.5, 0); 
+        
+        voyager.add(legLeft, legRight);
+
+        // JAM DIGITAL HIGH-RESOLUTION NEON
+        const clockCanvas = document.createElement('canvas');
+        clockCanvas.width = 512;
+        clockCanvas.height = 256;
+        const ctx = clockCanvas.getContext('2d');
+        const clockTexture = new THREE.CanvasTexture(clockCanvas);
+        
+        const clockFaceMat = new THREE.MeshBasicMaterial({ map: clockTexture });
+        const clockSideMat = new THREE.MeshStandardMaterial({ color: 0x140b24, roughness: 0.5 });
+        const clockMaterials = [ clockSideMat, clockSideMat, clockSideMat, clockSideMat, clockFaceMat, clockSideMat ];
+
+        const clockGeo = new THREE.BoxGeometry(8.5, 4.0, 0.8);
+        const clockMesh = new THREE.Mesh(clockGeo, clockMaterials);
+        clockMesh.position.set(0, -2, 3.9); 
+        voyager.add(clockMesh);
+
+        let lastTimeStr = "";
+
+        function drawNeonClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+
+            if (timeString !== lastTimeStr) {
+                lastTimeStr = timeString;
+
+                ctx.fillStyle = '#05030a';
+                ctx.fillRect(0, 0, clockCanvas.width, clockCanvas.height);
+
+                ctx.lineWidth = 14;
+                ctx.strokeStyle = 'rgba(217, 70, 223, 0.9)'; 
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = '#d946ef';
+                ctx.strokeRect(7, 7, clockCanvas.width - 14, clockCanvas.height - 14);
+
+                ctx.font = 'bold 84px "Courier New", Courier, monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                ctx.shadowBlur = 40;
+                ctx.shadowColor = '#d946ef';
+                ctx.fillStyle = 'rgba(217, 70, 239, 0.6)';
+                ctx.fillText(timeString, clockCanvas.width / 2, clockCanvas.height / 2);
+
+                ctx.shadowBlur = 10; 
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(timeString, clockCanvas.width / 2, clockCanvas.height / 2);
+
+                ctx.shadowBlur = 0;
+                clockTexture.needsUpdate = true;
+            }
+        }
+
+        camera.position.z = 24;
+        voyager.position.y = 1.5;
+
+        let targetX = 0;
+        let targetY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            targetX = (event.clientX - windowHalfX) / windowHalfX;
+            targetY = (event.clientY - windowHalfY) / windowHalfY;
         });
-        const torusKnot = new THREE.Mesh(geometry, material);
-        scene.add(torusKnot);
 
-        camera.position.z = 30;
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+            drawNeonClock();
 
-        // Animasi rotasi objek 3D
-        function animate() {
-            requestAnimationFrame(animate);
-            torusKnot.rotation.x += 0.01;
-            torusKnot.rotation.y += 0.01;
+            headGroup.rotation.y += (targetX * 1.0 - headGroup.rotation.y) * 0.08;
+            headGroup.rotation.x += (targetY * 0.6 - headGroup.rotation.x) * 0.08;
+
+            const time = Date.now() * 0.001;
+            voyager.position.y = 1.5 + Math.sin(time) * 0.3;
+            voyager.rotation.y = Math.sin(time * 0.4) * 0.08;
+
             renderer.render(scene, camera);
         }
-        animate();
+        animateThree();
 
-        // Responsive 3D Canvas
         window.addEventListener('resize', () => {
             const width = canvas.clientWidth;
             const height = canvas.clientHeight;
