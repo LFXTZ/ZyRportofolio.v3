@@ -158,7 +158,7 @@
             gap: 4rem; align-items: center; position: relative; z-index: 1;
         }
         
-        /* HEADINGS STYLING (Mendukung Efek Kliping Gradasi Kata AnimeJS) */
+        /* HEADINGS STYLING */
         .hero-title { 
             font-size: clamp(40px, 6vw, 72px); font-weight: 800; line-height: 1.3; margin-bottom: 0.8rem; 
         }
@@ -171,14 +171,14 @@
             width: 100px; height: 3px; background: linear-gradient(90deg, var(--accent-primary), var(--accent-light)); 
         }
 
-        /* Pastikan elemen span kata hasil pecahan Anime.js mempertahankan efek warna gradasi */
+        /* Efek kliping gradasi warna modern dan estetik pada elemen teks */
         .hero-title span, .section-title span {
             background: linear-gradient(135deg, #ffffff 0%, var(--accent-primary) 100%); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
             display: inline-block;
         }
-        /* Berikan warna highlight khusus untuk span nama */
+        /* Pewarnaan neon highlight khusus kata nama Anda */
         .hero-title span.highlight {
             background: linear-gradient(135deg, #ffffff 0%, var(--accent-light) 100%);
             -webkit-background-clip: text; 
@@ -357,7 +357,7 @@
 
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1 class="hero-title"><span>Hi, I'm</span> <span class="highlight">Rifqy</span></h1>
+                    <h1 class="hero-title">Hi, I'm Rifqy</h1>
                     <p class="hero-subtitle">Creative Developer & Designer</p>
                     <p class="hero-description">Mahasiswa Sistem Informasi dengan passion dalam teknologi, UI/UX design, dan konten visual estetis. Menghadirkan inovasi dalam web development dengan sentuhan 3D modern yang elegan.</p>
                     <div class="hero-buttons">
@@ -548,31 +548,74 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script type="module">
-        import { animate, splitText, stagger } from 'https://esm.sh/animejs@4.2.2';
+        // Mengimpor anime bawaan v4 tanpa splitText yang merusak modul
+        import { animate, stagger } from 'https://esm.sh/animejs@4.2.2';
+
+        // Fungsi Kustom Pengganti SplitText untuk Memotong Kata secara Aman & Estetis
+        function safeSplitTextToWords(selector) {
+            const elements = document.querySelectorAll(selector);
+            const wordsArray = [];
+            
+            elements.forEach(el => {
+                const text = el.innerText.trim();
+                el.innerHTML = ''; // Bersihkan teks lama
+                
+                const words = text.split(' ');
+                words.forEach((word, index) => {
+                    // Wadah luar dengan properti overflow hidden untuk efek tirai / topeng kliping
+                    const maskWrapper = document.createElement('span');
+                    maskWrapper.style.display = 'inline-block';
+                    maskWrapper.style.overflow = 'hidden';
+                    maskWrapper.style.verticalAlign = 'bottom';
+                    
+                    // Elemen teks dalam yang akan kita putar posisinya (y)
+                    const innerSpan = document.createElement('span');
+                    innerSpan.innerText = word + (index < words.length - 1 ? '\u00A0' : '');
+                    innerSpan.style.display = 'inline-block';
+                    
+                    // Deteksi kata nama agar gradasi pink highlight menyala otomatis
+                    if (word.toLowerCase().includes('rifqy')) {
+                        innerSpan.classList.add('highlight');
+                    }
+                    
+                    maskWrapper.appendChild(innerSpan);
+                    el.appendChild(maskWrapper);
+                    wordsArray.push(innerSpan);
+                });
+            });
+            
+            return { words: wordsArray };
+        }
 
         // 1. LOADING SCREEN
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loader = document.getElementById('loadingScreen');
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 500);
+                if(loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }
             }, 1000);
         });
 
         // 2. CUSTOM CURSOR
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            if(cursor) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            }
         });
 
         // 3. HAMBURGER MENU
         const hamburger = document.getElementById('hamburger');
         const navMenu = document.getElementById('navMenu');
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
+        if(hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
 
         // 4. SKILL BAR ANIMATION
         const skillBars = document.querySelectorAll('.skill-progress');
@@ -586,21 +629,16 @@
         }, { threshold: 0.5 });
         skillBars.forEach(bar => observer.observe(bar));
 
-        // ========================================================
-        // 5. ANIME.JS V4 KINETIC TYPOGRAPHY ANIMATION ON HEADINGS
-        // ========================================================
-        // Menunggu seluruh Font sistem dimuat sempurna agar penghitungan dimensi teks presisi
+        // 5. ANIME.JS V4 KINETIC TYPOGRAPHY ANIMATION (AKTIF PENUH)
         document.fonts.ready.then(() => {
-            // Memisahkan teks judul pada Beranda (.hero-title) dan section lain (.section-title)
-            const { words } = splitText('.hero-title, .section-title', {
-                words: { wrap: 'clip' },
-            });
+            // Memecah teks judul utama dan subjudul bagian profil/resume
+            const { words } = safeSplitTextToWords('.hero-title, .section-title');
 
-            // Eksekusi Animasi Sesuai Logika Kode yang Anda Inginkan
+            // Eksekusi animasi memutar bergulir mulus (Kinetic typography looping)
             animate(words, {
                 y: [
                     { to: ['100%', '0%'] },
-                    { to: '-100%', delay: 1400, ease: 'in(3)' } // Dinaikkan sedikit ke 1400ms agar pengunjung sempat membaca judul sebelum bergulir keluar
+                    { to: '-100%', delay: 1500, ease: 'in(3)' }
                 ],
                 duration: 750,
                 ease: 'out(3)',
@@ -609,179 +647,168 @@
             });
         });
 
-        // ========================================================
         // 6. THREE.JS VOYAGER MINECRAFT + REALISTIC NEON CLOCK
-        // ========================================================
         const canvas = document.getElementById('canvas3d');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-        
-        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
+        if (canvas) {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
 
-        // Pencahayaan Optimal
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-        scene.add(ambientLight);
-        
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(10, 20, 15);
-        scene.add(dirLight);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+            
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(10, 20, 15);
+            scene.add(dirLight);
 
-        // Main Character Group
-        const voyager = new THREE.Group();
-        scene.add(voyager);
+            const voyager = new THREE.Group();
+            scene.add(voyager);
 
-        // Palette Warna Minecraft Otentik
-        const skinMat  = new THREE.MeshStandardMaterial({ color: 0xda9174, roughness: 0.8 }); 
-        const noseMat  = new THREE.MeshStandardMaterial({ color: 0xc47e62, roughness: 0.8 });
-        const robeMat  = new THREE.MeshStandardMaterial({ color: 0x4a2a4a, roughness: 0.85 }); 
-        const pantsMat = new THREE.MeshStandardMaterial({ color: 0x2e112e, roughness: 0.9 });
-        const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
-        const blackMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.5 });
+            const skinMat  = new THREE.MeshStandardMaterial({ color: 0xda9174, roughness: 0.8 }); 
+            const noseMat  = new THREE.MeshStandardMaterial({ color: 0xc47e62, roughness: 0.8 });
+            const robeMat = new THREE.MeshStandardMaterial({ color: 0x4a2a4a, roughness: 0.85 }); 
+            const pantsMat = new THREE.MeshStandardMaterial({ color: 0x2e112e, roughness: 0.9 });
+            const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+            const blackMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.5 });
 
-        // A. KEPALA GROUP (Rotasi independen mengikuti kursor)
-        const headGroup = new THREE.Group();
-        headGroup.position.y = 4.5;
-        voyager.add(headGroup);
+            const headGroup = new THREE.Group();
+            headGroup.position.y = 4.5;
+            voyager.add(headGroup);
 
-        const headGeo = new THREE.BoxGeometry(6, 6, 6);
-        const head = new THREE.Mesh(headGeo, skinMat);
-        headGroup.add(head);
+            const headGeo = new THREE.BoxGeometry(6, 6, 6);
+            const head = new THREE.Mesh(headGeo, skinMat);
+            headGroup.add(head);
 
-        // Hidung Menonjol Otentik Villager
-        const noseGeo = new THREE.BoxGeometry(1.5, 3, 1.8);
-        const nose = new THREE.Mesh(noseGeo, noseMat);
-        nose.position.set(0, -1, 3.5);
-        headGroup.add(nose);
+            const noseGeo = new THREE.BoxGeometry(1.5, 3, 1.8);
+            const nose = new THREE.Mesh(noseGeo, noseMat);
+            nose.position.set(0, -1, 3.5);
+            headGroup.add(nose);
 
-        // Mata Kiri
-        const eyeL = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.1), whiteMat);
-        eyeL.position.set(-1.5, 0.5, 3.02);
-        const pupilL = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.5, 0.15), blackMat);
-        pupilL.position.set(-1.2, 0.5, 3.04);
-        headGroup.add(eyeL, pupilL);
+            const eyeL = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.1), whiteMat);
+            eyeL.position.set(-1.5, 0.5, 3.02);
+            const pupilL = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.5, 0.15), blackMat);
+            pupilL.position.set(-1.2, 0.5, 3.04);
+            headGroup.add(eyeL, pupilL);
 
-        // Mata Kanan
-        const eyeR = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.1), whiteMat);
-        eyeR.position.set(1.5, 0.5, 3.02);
-        const pupilR = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.5, 0.15), blackMat);
-        pupilR.position.set(1.2, 0.5, 3.04);
-        headGroup.add(eyeR, pupilR);
+            const eyeR = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.1), whiteMat);
+            eyeR.position.set(1.5, 0.5, 3.02);
+            const pupilR = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.5, 0.15), blackMat);
+            pupilR.position.set(1.2, 0.5, 3.04);
+            headGroup.add(eyeR, pupilR);
 
-        // B. BADAN (Jubah Ungu)
-        const bodyGeo = new THREE.BoxGeometry(6, 9, 4);
-        const body = new THREE.Mesh(bodyGeo, robeMat);
-        body.position.y = -3;
-        voyager.add(body);
+            const bodyGeo = new THREE.BoxGeometry(6, 9, 4);
+            const body = new THREE.Mesh(bodyGeo, robeMat);
+            body.position.y = -3;
+            voyager.add(body);
 
-        // C. TANGAN (Bersedekap pas di depan dada)
-        const armsGeo = new THREE.BoxGeometry(7.5, 3, 3);
-        const arms = new THREE.Mesh(armsGeo, robeMat);
-        arms.position.set(0, -2, 2.3);
-        voyager.add(arms);
+            const armsGeo = new THREE.BoxGeometry(7.5, 3, 3);
+            const arms = new THREE.Mesh(armsGeo, robeMat);
+            arms.position.set(0, -2, 2.3);
+            voyager.add(arms);
 
-        // E. KAKI (Dua kaki terpisah secara realistis)
-        const legGeo = new THREE.BoxGeometry(2.4, 6, 3.5);
-        
-        const legLeft = new THREE.Mesh(legGeo, pantsMat);
-        legLeft.position.set(-1.4, -10.5, 0); 
-        
-        const legRight = new THREE.Mesh(legGeo, pantsMat);
-        legRight.position.set(1.4, -10.5, 0); 
-        
-        voyager.add(legLeft, legRight);
+            const legGeo = new THREE.BoxGeometry(2.4, 6, 3.5);
+            
+            const legLeft = new THREE.Mesh(legGeo, pantsMat);
+            legLeft.position.set(-1.4, -10.5, 0); 
+            
+            const legRight = new THREE.Mesh(legGeo, pantsMat);
+            legRight.position.set(1.4, -10.5, 0); 
+            
+            voyager.add(legLeft, legRight);
 
-        // JAM DIGITAL HIGH-RESOLUTION NEON
-        const clockCanvas = document.createElement('canvas');
-        clockCanvas.width = 512;
-        clockCanvas.height = 256;
-        const ctx = clockCanvas.getContext('2d');
-        const clockTexture = new THREE.CanvasTexture(clockCanvas);
-        
-        const clockFaceMat = new THREE.MeshBasicMaterial({ map: clockTexture });
-        const clockSideMat = new THREE.MeshStandardMaterial({ color: 0x140b24, roughness: 0.5 });
-        const clockMaterials = [ clockSideMat, clockSideMat, clockSideMat, clockSideMat, clockFaceMat, clockSideMat ];
+            const clockCanvas = document.createElement('canvas');
+            clockCanvas.width = 512;
+            clockCanvas.height = 256;
+            const ctx = clockCanvas.getContext('2d');
+            const clockTexture = new THREE.CanvasTexture(clockCanvas);
+            
+            const clockFaceMat = new THREE.MeshBasicMaterial({ map: clockTexture });
+            const clockSideMat = new THREE.MeshStandardMaterial({ color: 0x140b24, roughness: 0.5 });
+            const clockMaterials = [ clockSideMat, clockSideMat, clockSideMat, clockSideMat, clockFaceMat, clockSideMat ];
 
-        const clockGeo = new THREE.BoxGeometry(8.5, 4.0, 0.8);
-        const clockMesh = new THREE.Mesh(clockGeo, clockMaterials);
-        clockMesh.position.set(0, -2, 3.9); 
-        voyager.add(clockMesh);
+            const clockGeo = new THREE.BoxGeometry(8.5, 4.0, 0.8);
+            const clockMesh = new THREE.Mesh(clockGeo, clockMaterials);
+            clockMesh.position.set(0, -2, 3.9); 
+            voyager.add(clockMesh);
 
-        let lastTimeStr = "";
+            let lastTimeStr = "";
 
-        function drawNeonClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const timeString = `${hours}:${minutes}:${seconds}`;
+            function drawNeonClock() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const timeString = `${hours}:${minutes}:${seconds}`;
 
-            if (timeString !== lastTimeStr) {
-                lastTimeStr = timeString;
+                if (timeString !== lastTimeStr) {
+                    lastTimeStr = timeString;
 
-                ctx.fillStyle = '#05030a';
-                ctx.fillRect(0, 0, clockCanvas.width, clockCanvas.height);
+                    ctx.fillStyle = '#05030a';
+                    ctx.fillRect(0, 0, clockCanvas.width, clockCanvas.height);
 
-                ctx.lineWidth = 14;
-                ctx.strokeStyle = 'rgba(217, 70, 223, 0.9)'; 
-                ctx.shadowBlur = 30;
-                ctx.shadowColor = '#d946ef';
-                ctx.strokeRect(7, 7, clockCanvas.width - 14, clockCanvas.height - 14);
+                    ctx.lineWidth = 14;
+                    ctx.strokeStyle = 'rgba(217, 70, 223, 0.9)'; 
+                    ctx.shadowBlur = 30;
+                    ctx.shadowColor = '#d946ef';
+                    ctx.strokeRect(7, 7, clockCanvas.width - 14, clockCanvas.height - 14);
 
-                ctx.font = 'bold 84px "Courier New", Courier, monospace';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
+                    ctx.font = 'bold 84px "Courier New", Courier, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
 
-                ctx.shadowBlur = 40;
-                ctx.shadowColor = '#d946ef';
-                ctx.fillStyle = 'rgba(217, 70, 239, 0.6)';
-                ctx.fillText(timeString, clockCanvas.width / 2, clockCanvas.height / 2);
+                    ctx.shadowBlur = 40;
+                    ctx.shadowColor = '#d946ef';
+                    ctx.fillStyle = 'rgba(217, 70, 239, 0.6)';
+                    ctx.fillText(timeString, clockCanvas.width / 2, clockCanvas.height / 2);
 
-                ctx.shadowBlur = 10; 
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(timeString, clockCanvas.width / 2, clockCanvas.height / 2);
+                    ctx.shadowBlur = 10; 
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(timeString, clockCanvas.width / 2, clockCanvas.height / 2);
 
-                ctx.shadowBlur = 0;
-                clockTexture.needsUpdate = true;
+                    ctx.shadowBlur = 0;
+                    clockTexture.needsUpdate = true;
+                }
             }
+
+            camera.position.z = 24;
+            voyager.position.y = 1.5;
+
+            let targetX = 0;
+            let targetY = 0;
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                targetX = (event.clientX - windowHalfX) / windowHalfX;
+                targetY = (event.clientY - windowHalfY) / windowHalfY;
+            });
+
+            function animateThree() {
+                requestAnimationFrame(animateThree);
+                drawNeonClock();
+
+                headGroup.rotation.y += (targetX * 1.0 - headGroup.rotation.y) * 0.08;
+                headGroup.rotation.x += (targetY * 0.6 - headGroup.rotation.x) * 0.08;
+
+                const time = Date.now() * 0.001;
+                voyager.position.y = 1.5 + Math.sin(time) * 0.3;
+                voyager.rotation.y = Math.sin(time * 0.4) * 0.08;
+
+                renderer.render(scene, camera);
+            }
+            animateThree();
+
+            window.addEventListener('resize', () => {
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                renderer.setSize(width, height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            });
         }
-
-        camera.position.z = 24;
-        voyager.position.y = 1.5;
-
-        let targetX = 0;
-        let targetY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        document.addEventListener('mousemove', (event) => {
-            targetX = (event.clientX - windowHalfX) / windowHalfX;
-            targetY = (event.clientY - windowHalfY) / windowHalfY;
-        });
-
-        function animateThree() {
-            requestAnimationFrame(animateThree);
-            drawNeonClock();
-
-            headGroup.rotation.y += (targetX * 1.0 - headGroup.rotation.y) * 0.08;
-            headGroup.rotation.x += (targetY * 0.6 - headGroup.rotation.x) * 0.08;
-
-            const time = Date.now() * 0.001;
-            voyager.position.y = 1.5 + Math.sin(time) * 0.3;
-            voyager.rotation.y = Math.sin(time * 0.4) * 0.08;
-
-            renderer.render(scene, camera);
-        }
-        animateThree();
-
-        window.addEventListener('resize', () => {
-            const width = canvas.clientWidth;
-            const height = canvas.clientHeight;
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-        });
     </script>
 </body>
 </html>
